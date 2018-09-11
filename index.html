@@ -2,218 +2,165 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Trabalho de Pós Graduaão</title>
+    <title>chatSocketAchex.js</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-     <script src="http://oscaruhp.github.io/chatSocketAchex/js/jquery.min.js"></script> 
-      <script src="http://oscaruhp.github.io/chatSocketAchex/js/prism.js"></script>
-      
-   
-<script>
-$.fn.extend({ChatSocket: function(opciones) {
-					var ChatSocket=this;
-				
-                    var idChat=$(ChatSocket).attr('id');
-					defaults = {
-		                  ws,
-                          Room:"RoomDeveloteca",
-                          pass:"1234",
-                          lblTitulChat:" Web Chat ",
-                          lblCampoEntrada:"Menssage",
-                          lblEnviar:"Send",
-                          textoAyuda:"IFSULDEMINAS",
-                          Nombre:"Anonimo",
-                          
-                          urlImg:"http://placehold.it/50/55C1E7/fff&text=U",
-                          btnEntrar:"btnEntrar",
-                          btnEnviar:"btnEnviar",
-                          lblBtnEnviar:"Enviar",
-                          lblTxtEntrar:"txtEntrar",
-                          lblTxtEnviar:"txtMensagem",
-                          lblBtnEntrar:"Enter",
-                          idDialogo:"DialogoEntrada",
-                          classChat:"",
-                          idOnline:"ListaOnline",
-                          lblUsuariosOnline:"Usários",
-                        lblEntradaNombre:"Nome:",
-                        panelColor:"success"
-        			}
-					
-                     var opciones = $.extend({}, defaults, opciones);
-		
-                     var ws;
-                     var Room=opciones.Room;
-                     var pass=opciones.pass;
-                     var lblTitulChat=opciones.lblTitulChat;
-                     var lblCampoEntrada=opciones.lblCampoEntrada;
-                     var lblEnviar=opciones.lblBtnEnviar;
-                     var textoAyuda=opciones.textoAyuda;
-                     var Nombre=opciones.Nombre;
-                     
-                     var urlImg=opciones.urlImg;
-                     var btnEntrar=opciones.btnEntrar;
-                     var btnEnviar=opciones.btnEnviar;
-                     var lblBtnEnviar=opciones.lblBtnEnviar;
-                     var lblTxtEntrar=opciones.lblTxtEntrar;
-                     var lblTxtEnviar=opciones.lblTxtEnviar;
-                     var lblBtnEntrar=opciones.lblBtnEntrar;
-                     var idDialogo=opciones.idDialogo;
-                     var classChat=opciones.classChat;
-                     var idOnline=opciones.idOnline;
-                     var lblUsuariosOnline=opciones.lblUsuariosOnline;
-                     var lblEntradaNombre=opciones.lblEntradaNombre;
-                     var panelColor=opciones.panelColor;
-                    if( $('#'+idOnline).length==0 )
-                    {
-                     idOnline=idChat+"listaOnline";
-                        $('#'+idChat).append('<br/><div id="'+idOnline+'"></div>');
-                        
-                    }
-    
-    
-    
-            function IniciarConexion(){
-                    conex='{"setID":"'+Room+'","passwd":"'+pass+'"}';
-                    ws= new WebSocket("ws://achex.ca:4010");
-                    ws.onopen= function(){ ws.send(conex); }
-                    ws.onmessage= function(Mensajes){
-                    var MensajesObtenidos=Mensajes.data;
-                    var obj = jQuery.parseJSON(MensajesObtenidos);
-                    AgregarItem(obj);
-                    
-                    if(obj.sID!=null){
-                        
-                                                      
-                    if( $('#'+obj.sID).length==0 )
-                    {
-                        
-                      $('#listaOnline').append('<li class="list-group-item" id="'+obj.sID+'"><span class="label label-success">&#9679;</span> - '+obj.Nombre+'</li>');
-                        
-                    }
-                     
-                    }
-                    
-                }
-                ws.onclose= function(){
-                    alert("Conexión cerrada");
-                }
-          }
-           IniciarConexion();
-          function iniciarChat(){
-            Nombre=$('#'+lblTxtEntrar).val();
-            $('#'+idDialogo).hide();
-              $('#'+idOnline).show();
-              
-            CrearChat();  
-            UsuarioOnline();
-            getOnline();
-          }
-           
-          function CrearEntrada(){
-          $('#'+idChat).append('<div id="'+idDialogo+'" class="'+classChat+'" id="InputNombre"><div class="panel-footer" style="margin-top:100px;"><div class="input-group"><input id="'+lblTxtEntrar+'" type="text" class="form-control input-sm" placeholder="'+lblEntradaNombre+'"><span class="input-group-btn"><button id="'+btnEntrar+'" class="btn btn-success btn-sm" >'+lblBtnEntrar+'</button></span></div></div></div>');
-         $('#'+idOnline).append(' <div class="panel panel-'+panelColor+'"><div class="panel-heading"><span class="glyphicon glyphicon-user"></span> '+lblUsuariosOnline+'</div><div class="panel-body"><ul class="list-group" id="listaOnline"></ul></div><div class="panel-footer"><div class="input-group"><div><a href="#">by IFSULDEMINAS/PASSOS</a></div></span></div></div></div>');
-              $("#"+lblTxtEntrar).keyup(function (e) {if (e.keyCode == 13) { iniciarChat(); }});
-              $("#"+btnEntrar).click(function(){
-              iniciarChat();
-              });
-        }
-          function CrearChat(){
-             $('#'+idChat ).append( '<div class="'+classChat+'"><div class="panel panel-'+panelColor+'"><div class="panel-heading"><span class="glyphicon glyphicon-comment"></span>'+lblTitulChat+" : "+Nombre+'<div class="btn-group pull-right"><button type="button" onclick="alert(\''+textoAyuda+'\')" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button></div></div><div class="panel-body"><ul class="chatpluginchat"></ul></div><div class="panel-footer"><div class="input-group"><input id="'+lblTxtEnviar+'" type="text" class="form-control input-sm" placeholder="'+lblCampoEntrada+'" /><span class="input-group-btn"><button  class="btn btn-warning btn-sm" id="'+btnEnviar+'">'+lblEnviar+'</button></span></div></div></div></div><li class="left clearfix itemtemplate" style="display:none"><span class="chat-img pull-left"><img src="'+urlImg+'" alt="User Avatar" class="img-circle" id="Foto"/></span><div class="chat-body clearfix"><div class="header"><strong class="primary-font" id="Nombre">Nombre</strong><small class="pull-right text-muted"><span class="glyphicon glyphicon-asterisk"></span><span id="Tiempo">12 mins ago</span></small></div> <p id="Contenido">Contenido</p></div></li>');
-              
-    $("#"+lblTxtEnviar).keyup(function (e) {if (e.keyCode == 13) { EnviarMensaje();}});
-    $("#"+btnEnviar).click(function () {EnviarMensaje();});
-              
-        }
-      
-        function EnviarMensaje(){
-           ws.send('{"to":"'+Room+'","Nombre":"'+Nombre+'","Contenido":"'+$('#'+lblTxtEnviar).val()+'"}');
-        $("#"+lblTxtEnviar).val('');
-          
-        };
-        function UsuarioOnline(){
-           ws.send('{"to":"'+Room+'","Nombre":"'+Nombre+'"}');
-        }
-        function AgregarItem(Obj){
-            
-            if((Obj.Contenido!=null)&&(Obj.Nombre!=null)){
-                
-            $( ".itemtemplate" ).clone().appendTo( ".chatpluginchat" );
-            $('.chatpluginchat .itemtemplate').show(10);
-            $('.chatpluginchat .itemtemplate #Nombre').html(Obj.Nombre);
-            $('.chatpluginchat .itemtemplate #Contenido').html(Obj.Contenido);
-             
-             var formattedDate = new Date();
-             var d = formattedDate.getUTCDate();
-             var m =  formattedDate.getMonth();
-             var y = formattedDate.getFullYear();
-             var h= formattedDate.getHours();
-             var min= formattedDate.getMinutes();
-            
-            Fecha=d+"/"+m+"/"+y+" "+h+":"+min;
-            
-            $('.chatpluginchat .itemtemplate #Tiempo').html(Fecha);
-            $('.chatpluginchat .itemtemplate').removeClass("itemtemplate");
-            }
-        }
-           function getOnline() {
-                setInterval(UsuarioOnline, 3000);
-            }
-           
-         
-         CrearEntrada();
-    // Fin
-    
-	}
-});
-</script>
-
-
     <!-- bootstrap -->
-    <link rel="stylesheet" href="http://oscaruhp.github.io/chatSocketAchex/css/bootstrap.min.css">
-      <link rel="stylesheet" href="http://oscaruhp.github.io/chatSocketAchex/css/prism.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+      <link rel="stylesheet" href="css/prism.css">
     
+      <script src="js/jquery.min.js"></script> 
+      <script src="js/prism.js"></script>
+      
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="http://oscaruhp.github.io/chatSocketAchex/chatSocketAchex.css">
+<script src="chatSocketAchex.js"></script>
+       <link rel="stylesheet" type="text/css" href="chatSocketAchex.css">
              
   </head>
   <body>
     <div class="container">
         <div class="row">
             <div class="col-md-4 text-center">
+            <div  class="well" >
+                <a href="http://develoteca.com">
+                    <img src="http://develoteca.com/wp-content/themes/site/img/develoteca.png"/>
+               <br/>by develoteca.com
+                </a>
+                
+            </div>
+          <a href="https://github.com/oscaruhp/chatSocketAchex/archive/gh-pages.zip" class="btn3d btn btn-success btn-lg">Download v1.0</a>
+              <br/><br/>
+              <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- lateral -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:300px;height:250px"
+     data-ad-client="ca-pub-4331617637495482"
+     data-ad-slot="7438564459"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+              <div class="col-md-12 well">
+                  <h3>Thank you for comments</h3>
+           <div id="fb-root"></div>
            
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/es_MX/sdk.js#xfbml=1&version=v2.5&appId=132799306837455";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+             <div class="fb-comments" data-href="http://oscaruhp.github.io/chatSocketAchex/" data-width="300" data-numposts="5"></div>
+                 </div>  
           </div>
             
-    <div class="col-md-12">
+    <div class="col-md-8">
         <br/>
-        <h1 class="text-center"><span style="color:#449D44">TRABALHO DE PÓS-GRADUAÇÃO</h1>
+        <h1 class="text-center"><span style="color:#449D44">chatSocketAchex</span> jQuery Plugin</h1>
         
-        <h1>webchat (Demo) <a href="{{Auth::logout()}}">Sair</a></h1>
+        <h1>chatSocketAchex (Demo)</h1>
         <div class="row alert alert-info">
         
          <div class="col-lg-4">
-            <div id="ListaOnline">               
-            </div>            
+            <div id="ListaOnline">
+               
+            </div>
+            
          </div>   
          
           <div class="col-lg-8">            
           <div id="Elchat"></div>
           </div>   
-        </div>
+</div>
             
         
       <script type="text/javascript">
-           $('#Elchat').ChatSocket({'lblEntradaNombre':'DIgite algum nome para entrar no chat'});
+           $('#Elchat').ChatSocket({'lblEntradaNombre':'Enter a user name in the field below for the chat room'});
         </script>
         
-      
+        <h2>chatSocketAchex jQuery</h2>
+              <h3>Quick start</h3>
+            1.- Include the files
+            <pre><code class="language-markup">
+    <br>  
+    &lt;!-- Bootstrap and JQuery --&gt;<br>    
+    &lt;script src=&quot;jquery.min.js&quot;&gt; &lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css&quot;&gt;    
+    
+    &lt;!-- Plugin --&gt;
+    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;chatSocketAchex.css&quot;&gt;
+    &lt;script src=&quot;chatSocketAchex.js&quot;&gt;&lt;/script&gt;    
+
+</code></pre>
+              
+            2.- Create HTML Element
+            <pre><code class="language-markup">
+   &lt;div id=&quot;Elchat&quot;&gt;&lt;/div&gt;
+             </code></pre>
+            
+            
+            3.- Call the the plugin on a container as your wish
+            <pre><code class="language-javascript">
+   $('#Elchat').ChatSocket();
+               </code></pre>
+            
+            
+             4.- All done!
+            
+            <h2>Options</h2>
+            you can custom by passing options when call the plugin, all available options are listed below.
+call the the plugin on a container wish you wish
+            
+            
+             <pre><code class="language-javascript">
+        $('#Elchat').ChatSocket({
+                    option: value,
+                    option2: value2
+       });
+                 
+               </code></pre>
+            Demo (Options)
+           <pre><code class="language-javascript">
+        { 
+       Room:&quot;RoomDeveloteca&quot;, // important  - room or user
+       pass:&quot;1234&quot;, // important - pass of room or user
+       lblTitulChat:&quot; Chat Develoteca.com &quot;, //Chat Name
+       lblCampoEntrada:&quot;Menssage&quot;,
+       lblEnviar:&quot;Send&quot;,
+       textoAyuda:&quot;Develoteca&quot;, // Help button
+       Nombre:&quot;Anónimo&quot;, // default Name.
+       urlImg:&quot;http://placehold.it/50/55C1E7/fff&amp;text=U&quot;, // Avatar chat
+       btnEntrar:&quot;btnEntrar&quot;,
+       btnEnviar:&quot;btnEnviar&quot;,
+       lblBtnEnviar:&quot;Enviar&quot;,
+       lblTxtEntrar:&quot;txtEntrar&quot;,
+       lblTxtEnviar:&quot;txtMensaje&quot;,
+       lblBtnEntrar:&quot;Enter&quot;,  // Joined button
+       idDialogo:&quot;DialogoEntrada&quot;, 
+       classChat:&quot;&quot;,  // add class chat
+       idOnline:&quot;ListaOnline&quot;, // id control users joined 
+       lblUsuariosOnline:&quot;Users joined&quot;, // text users online 
+       lblEntradaNombre:&quot;Name:&quot;,
+       panelColor:&quot;success&quot;
+        }
+           </code></pre>
+          <div class="panel panel-default">
+            <div class="panel-heading"><h1>&nbsp;</h1></div>
+        </div>
     </div>
     
         </div>
     </div>
-   
-   
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-</body>
+  ga('create', 'UA-74824848-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
 </html>
-
-
